@@ -1,0 +1,244 @@
+:root {
+  --page-bg: #f2f2f0;
+  --card-bg: #ffffff;
+  --section-bg: #f4f7f5;
+  --border: #e0ebe5;
+  --text: #17332a;
+  --text-muted: #4a7a62;
+  --accent: #94ad61;
+  --accent-dark: #6b8a3a;
+  --accent-hover: #5a7430;
+  --warning: #f1963a;
+  --input-bg: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--page-bg);
+  color: var(--text);
+}
+
+a {
+  color: var(--accent-dark);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.page {
+  min-height: 100vh;
+  background: var(--page-bg);
+  padding: 32px 16px;
+}
+
+.container {
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+.page-title {
+  margin-bottom: 20px;
+  color: var(--text);
+}
+
+.page-subtitle {
+  margin-bottom: 24px;
+  color: var(--text-muted);
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 22px rgba(23, 51, 42, 0.08);
+}
+
+.section-header {
+  width: 100%;
+  background: var(--section-bg);
+  color: var(--text);
+  border: none;
+  padding: 18px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+}
+
+.section-header:hover {
+  background: #edf3ef;
+}
+
+.chevron {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+}
+
+.section-body {
+  padding: 0 20px 20px 20px;
+}
+
+.form-label {
+  display: block;
+  color: var(--text);
+  font-weight: 600;
+  margin-bottom: 6px;
+  margin-top: 14px;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  color: var(--text);
+  font: inherit;
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.paste-zone:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-color: var(--accent);
+}
+
+.form-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.help-text {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  margin-top: 8px;
+}
+
+.paste-zone {
+  margin-top: 8px;
+  padding: 18px;
+  border: 2px dashed var(--accent);
+  border-radius: 12px;
+  color: var(--text-muted);
+  background: var(--section-bg);
+  outline: none;
+}
+
+.upload-button {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 600;
+  border: none;
+}
+
+.upload-button:hover {
+  background: var(--accent-dark);
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.image-card {
+  background: var(--section-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.image-preview {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.file-name {
+  color: var(--text);
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+  word-break: break-word;
+}
+
+.remove-button {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #ffffff;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.remove-button:hover {
+  background: #f7faf8;
+}
+
+.preview-text {
+  margin: 0;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: none;
+  background: var(--accent);
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-top: 8px;
+  box-shadow: 0 6px 16px rgba(107, 138, 58, 0.25);
+}
+
+.submit-button:hover {
+  background: var(--accent-dark);
+}
+
+.tip-box {
+  background: var(--section-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-top: 8px;
+}
+
+.tip-intro {
+  margin: 0 0 10px 0;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.tip-list {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--text-muted);
+}
+
+.tip-list li {
+  margin-bottom: 6px;
+}
