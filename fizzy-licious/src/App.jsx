@@ -259,6 +259,7 @@ export default function BugTrackFormMockup() {
   }
 
   async function handleSubmit(clearAfter = false) {
+    console.log("screenshots at submit:", screenshots.length);
     const payload = buildFizzyCardPayload();
 
     if (screenshots.length > 0) {
@@ -616,7 +617,7 @@ export default function BugTrackFormMockup() {
         </Section>
 
         <div className="submit-row">
-          <button type="button" className="submit-button" onClick={handleSubmit}>
+          <button type="button" className="submit-button" onClick={() => handleSubmit()}>
             Submit Bug Track
           </button>
           <button type="button" className="submit-button submit-button--secondary" onClick={() => handleSubmit(true)}>
