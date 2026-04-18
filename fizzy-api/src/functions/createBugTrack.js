@@ -83,7 +83,7 @@ app.http("createBugTrack", {
         for (const screenshot of screenshots) {
           try {
             const signedId = await uploadScreenshot(fizzyToken, accountSlug, screenshot);
-            signedIds.push(signedId);
+            signedIds.push({ signedId, screenshot });
             screenshotResults.uploaded++;
           } catch (err) {
             context.warn(`Screenshot upload failed for "${screenshot.name}":`, err.message);
@@ -94,7 +94,10 @@ app.http("createBugTrack", {
 
         if (signedIds.length > 0) {
           const attachmentTags = signedIds
-            .map((signedId) => `<action-text-attachment sgid="${signedId}"></action-text-attachment>`)
+            .map(({ signedId, screenshot }) => {
+              const url = `https://app.fizzy.do/${accountSlug}/rails/active_storage/blobs/redirect/${signedId}/${encodeURIComponent(screenshot.name)}`;
+              return `<action-text-attachment sgid="${signedId}" content-type="${screenshot.type}" filename="${screenshot.name}" filesize="${screenshot.size}" url="${url}"></action-text-attachment>`;
+            })
             .join("");
           body += `<div style="margin-top:16px;"><p><strong>Screenshots:</strong></p>${attachmentTags}</div>`;
         }
