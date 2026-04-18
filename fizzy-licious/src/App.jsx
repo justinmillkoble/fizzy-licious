@@ -31,6 +31,7 @@ export default function BugTrackFormMockup() {
   const [screenshots, setScreenshots] = useState([]);
 
   const [formData, setFormData] = useState({
+    salesforceLink: "",
     productCategory: "",
     customer: "",
     version: "",
@@ -190,9 +191,14 @@ export default function BugTrackFormMockup() {
     `;
   }
 
-  if (formData.dataLink || formData.videoLink || formData.dumpFilesLink) {
+  if (formData.salesforceLink || formData.dataLink || formData.videoLink || formData.dumpFilesLink) {
     description += `
       <div style="margin-top:16px;">
+        ${
+          formData.salesforceLink
+            ? `<p><a href="${escapeHtml(formData.salesforceLink)}">Salesforce Ticket</a></p>`
+            : ""
+        }
         ${
           formData.dataLink
             ? `<p><a href="${escapeHtml(formData.dataLink)}">Data Link</a></p>`
@@ -230,6 +236,7 @@ export default function BugTrackFormMockup() {
 
   function clearForm() {
     setFormData({
+      salesforceLink: "",
       productCategory: "",
       customer: "",
       version: "",
@@ -310,6 +317,18 @@ export default function BugTrackFormMockup() {
         <p className="page-subtitle">
           This form is used as a template to submit bug tracks
         </p>
+
+        <div className="card sf-card">
+          <label className="form-label">Salesforce Ticket Link</label>
+          <input
+            className="form-input"
+            type="text"
+            name="salesforceLink"
+            value={formData.salesforceLink}
+            onChange={handleChange}
+            placeholder="Paste Salesforce ticket URL (optional)"
+          />
+        </div>
 
         <Section
           sectionKey="context"
@@ -619,7 +638,7 @@ function CardPreview({ formData, screenshots }) {
     );
   }
 
-  const hasLinks = formData.dataLink || formData.videoLink || formData.dumpFilesLink;
+  const hasLinks = formData.salesforceLink || formData.dataLink || formData.videoLink || formData.dumpFilesLink;
   const hasEnvironment = formData.machineType || formData.operatingSystem;
 
   return (
@@ -665,6 +684,14 @@ function CardPreview({ formData, screenshots }) {
 
       {hasLinks && (
         <div className="card-preview-section">
+          {formData.salesforceLink && (
+            <p className="preview-link-row">
+              <strong>Salesforce Ticket:</strong>{" "}
+              <a href={formData.salesforceLink} target="_blank" rel="noopener noreferrer">
+                {formData.salesforceLink}
+              </a>
+            </p>
+          )}
           {formData.dataLink && (
             <p className="preview-link-row">
               <strong>Data:</strong>{" "}
