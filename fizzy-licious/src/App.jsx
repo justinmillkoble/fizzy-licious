@@ -197,6 +197,7 @@ export default function BugTrackFormMockup() {
         formData.problemDescr || "N/A"
       )}</p>
       <p><strong>Reproducible:</strong> ${escapeHtml(formData.reproducible || "N/A")}</p>
+      ${formData.steps ? `<p><strong>Steps to Reproduce:</strong><br>${formatMultiline(formData.steps)}</p>` : ""}
     </div>
 
     <div style="margin-top:16px;">
@@ -208,14 +209,6 @@ export default function BugTrackFormMockup() {
       )}</p>
     </div>
   `;
-
-  if (formData.steps) {
-    description += `
-      <div style="margin-top:16px;">
-        <p><strong>Steps to Reproduce:</strong><br>${formatMultiline(formData.steps)}</p>
-      </div>
-    `;
-  }
 
   if (formData.apiEndpoint || formData.requestPayload || formData.apiResponse) {
     description += `
