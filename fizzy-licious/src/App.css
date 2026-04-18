@@ -304,6 +304,17 @@ a:hover {
   background: var(--accent-dark);
 }
 
+.input-error {
+  border-color: #d9534f !important;
+  outline-color: #d9534f;
+}
+
+.field-error {
+  color: #d9534f;
+  font-size: 0.8rem;
+  margin: 4px 0 0 2px;
+}
+
 .submit-row {
   display: flex;
   gap: 10px;

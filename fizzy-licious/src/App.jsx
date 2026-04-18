@@ -29,6 +29,7 @@ export default function BugTrackFormMockup() {
   });
 
   const [screenshots, setScreenshots] = useState([]);
+  const [errors, setErrors] = useState({});
 
   const [formData, setFormData] = useState({
     salesforceLink: "",
@@ -49,11 +50,8 @@ export default function BugTrackFormMockup() {
 
   function handleChange(event) {
     const { name, value } = event.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   }
 
   function toggleSection(sectionName) {
@@ -234,6 +232,18 @@ export default function BugTrackFormMockup() {
     });
   }
 
+  function validate() {
+    const e = {};
+    if (!formData.productCategory) e.productCategory = "Product category is required.";
+    if (!formData.customer.trim()) e.customer = "Customer is required.";
+    if (formData.productCategory === "EBMS" && !formData.version.trim()) e.version = "Version is required for EBMS.";
+    if (!formData.problemDescr.trim()) e.problemDescr = "Description of problem is required.";
+    if (!formData.reproducible) e.reproducible = "Please select whether this is reproducible.";
+    if (!formData.observedBehavior.trim()) e.observedBehavior = "Observed behavior is required.";
+    if (!formData.expectedBehavior.trim()) e.expectedBehavior = "Expected behavior is required.";
+    return e;
+  }
+
   function clearForm() {
     setFormData({
       salesforceLink: "",
@@ -256,9 +266,23 @@ export default function BugTrackFormMockup() {
     });
     setScreenshots([]);
     setOpenSections((prev) => ({ ...prev, context: true }));
+    setErrors({});
   }
 
   async function handleSubmit(clearAfter = false) {
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      const contextFields = ["productCategory", "customer", "version"];
+      const reproFields = ["problemDescr", "reproducible", "observedBehavior", "expectedBehavior"];
+      setOpenSections((prev) => ({
+        ...prev,
+        context: prev.context || contextFields.some((f) => validationErrors[f]),
+        reproduction: prev.reproduction || reproFields.some((f) => validationErrors[f]),
+      }));
+      return;
+    }
+    setErrors({});
     console.log("screenshots at submit:", screenshots.length);
     const payload = buildFizzyCardPayload();
 
@@ -343,7 +367,7 @@ export default function BugTrackFormMockup() {
         >
           <label className="form-label">Product Category *</label>
           <select
-            className="form-input"
+            className={`form-input${errors.productCategory ? " input-error" : ""}`}
             name="productCategory"
             value={formData.productCategory}
             onChange={handleChange}
@@ -357,26 +381,29 @@ export default function BugTrackFormMockup() {
               </option>
             ))}
           </select>
+          {errors.productCategory && <p className="field-error">{errors.productCategory}</p>}
 
           <label className="form-label">Customer *</label>
           <input
-            className="form-input"
+            className={`form-input${errors.customer ? " input-error" : ""}`}
             type="text"
             name="customer"
             value={formData.customer}
             onChange={handleChange}
             placeholder="Customer name or account"
           />
+          {errors.customer && <p className="field-error">{errors.customer}</p>}
 
           <label className="form-label">Version *</label>
           <input
-            className="form-input"
+            className={`form-input${errors.version ? " input-error" : ""}`}
             type="text"
             name="version"
             value={formData.version}
             onChange={handleChange}
             placeholder="Example: 8.6.239.049"
           />
+          {errors.version && <p className="field-error">{errors.version}</p>}
         </Section>
 
         <Section
@@ -424,16 +451,17 @@ export default function BugTrackFormMockup() {
         >
           <label className="form-label">Description of Problem *</label>
           <textarea
-            className="form-textarea"
+            className={`form-textarea${errors.problemDescr ? " input-error" : ""}`}
             name="problemDescr"
             value={formData.problemDescr}
             onChange={handleChange}
             placeholder="EBMS won't open"
           />
+          {errors.problemDescr && <p className="field-error">{errors.problemDescr}</p>}
 
           <label className="form-label">Reproducible *</label>
           <select
-            className="form-input"
+            className={`form-input${errors.reproducible ? " input-error" : ""}`}
             name="reproducible"
             value={formData.reproducible}
             onChange={handleChange}
@@ -445,6 +473,7 @@ export default function BugTrackFormMockup() {
             <option value="No">No</option>
             <option value="Kinda">Kinda</option>
           </select>
+          {errors.reproducible && <p className="field-error">{errors.reproducible}</p>}
 
           <label className="form-label">Steps to Reproduce</label>
           <textarea
@@ -457,21 +486,23 @@ export default function BugTrackFormMockup() {
 
           <label className="form-label">Observed Behavior *</label>
           <textarea
-            className="form-textarea"
+            className={`form-textarea${errors.observedBehavior ? " input-error" : ""}`}
             name="observedBehavior"
             value={formData.observedBehavior}
             onChange={handleChange}
             placeholder="What happened?"
           />
+          {errors.observedBehavior && <p className="field-error">{errors.observedBehavior}</p>}
 
           <label className="form-label">Expected Behavior *</label>
           <textarea
-            className="form-textarea"
+            className={`form-textarea${errors.expectedBehavior ? " input-error" : ""}`}
             name="expectedBehavior"
             value={formData.expectedBehavior}
             onChange={handleChange}
             placeholder="What should have happened instead?"
           />
+          {errors.expectedBehavior && <p className="field-error">{errors.expectedBehavior}</p>}
         </Section>
 
         <Section
