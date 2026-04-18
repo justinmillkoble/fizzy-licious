@@ -528,7 +528,16 @@ export default function BugTrackFormMockup() {
           </select>
           {errors.reproducible && <p className="field-error">{errors.reproducible}</p>}
 
-          {formData.productCategory === "APP/API" ? (
+          <label className="form-label">Steps to Reproduce</label>
+          <textarea
+            className="form-textarea"
+            name="steps"
+            value={formData.steps}
+            onChange={handleChange}
+            placeholder="List each step clearly. Example: 1. Open Sales Order 2. Assign customer 3. Press Ctrl+N"
+          />
+
+          {formData.productCategory === "APP/API" && (
             <>
               <label className="form-label">API Endpoint</label>
               <input
@@ -556,17 +565,6 @@ export default function BugTrackFormMockup() {
                 value={formData.apiResponse}
                 onChange={handleChange}
                 placeholder='{"error": "message"}'
-              />
-            </>
-          ) : (
-            <>
-              <label className="form-label">Steps to Reproduce</label>
-              <textarea
-                className="form-textarea"
-                name="steps"
-                value={formData.steps}
-                onChange={handleChange}
-                placeholder="List each step clearly. Example: 1. Open Sales Order 2. Assign customer 3. Press Ctrl+N"
               />
             </>
           )}
