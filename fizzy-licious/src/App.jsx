@@ -30,6 +30,8 @@ export default function BugTrackFormMockup() {
 
   const [screenshots, setScreenshots] = useState([]);
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const [formData, setFormData] = useState({
     salesforceLink: "",
@@ -55,6 +57,7 @@ export default function BugTrackFormMockup() {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
+    if (isSubmitted) setIsSubmitted(false);
   }
 
   function toggleSection(sectionName) {
@@ -316,6 +319,8 @@ export default function BugTrackFormMockup() {
     setScreenshots([]);
     setOpenSections((prev) => ({ ...prev, context: true }));
     setErrors({});
+    setIsSubmitted(false);
+    setIsSubmitting(false);
   }
 
   async function handleSubmit(clearAfter = false) {
@@ -332,6 +337,7 @@ export default function BugTrackFormMockup() {
       return;
     }
     setErrors({});
+    setIsSubmitting(true);
     console.log("screenshots at submit:", screenshots.length);
     const payload = buildFizzyCardPayload();
 
@@ -380,11 +386,17 @@ export default function BugTrackFormMockup() {
         window.open(result.fizzy.url, "_blank", "noopener,noreferrer");
       }
 
-      if (clearAfter) clearForm();
+      if (clearAfter) {
+        clearForm();
+      } else {
+        setIsSubmitted(true);
+      }
     } catch (error) {
       console.error("Submit failed - full error:", error);
       console.error("Error message:", error?.message);
       alert("Could not reach the Azure Function.");
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -730,11 +742,21 @@ export default function BugTrackFormMockup() {
         </Section>
 
         <div className="submit-row">
-          <button type="button" className="submit-button" onClick={() => handleSubmit()}>
-            Submit Bug Track
+          <button
+            type="button"
+            className="submit-button"
+            onClick={() => handleSubmit()}
+            disabled={isSubmitting || isSubmitted}
+          >
+            {isSubmitting ? "Submitting…" : isSubmitted ? "Submitted ✓" : "Submit Bug Track"}
           </button>
-          <button type="button" className="submit-button submit-button--secondary" onClick={() => handleSubmit(true)}>
-            Submit &amp; Add Another
+          <button
+            type="button"
+            className="submit-button submit-button--secondary"
+            onClick={() => handleSubmit(true)}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Submitting…" : "Submit & Add Another"}
           </button>
         </div>
         <div className="submit-footer">

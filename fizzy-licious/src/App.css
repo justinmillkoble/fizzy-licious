@@ -353,6 +353,15 @@ a:hover {
   background: var(--accent-dark);
 }
 
+.submit-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.submit-button:disabled:hover {
+  background: var(--accent);
+}
+
 .input-error {
   border-color: #d9534f !important;
   outline-color: #d9534f;
