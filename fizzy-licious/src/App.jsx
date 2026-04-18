@@ -55,10 +55,44 @@ export default function BugTrackFormMockup() {
   }
 
   function toggleSection(sectionName) {
-    setOpenSections((prev) => ({
-      ...prev,
-      [sectionName]: !prev[sectionName],
-    }));
+    setOpenSections((prev) => {
+      const isOpening = !prev[sectionName];
+      if (isOpening) {
+        const allClosed = Object.keys(prev).reduce((acc, key) => ({ ...acc, [key]: false }), {});
+        return { ...allClosed, [sectionName]: true };
+      }
+      return { ...prev, [sectionName]: false };
+    });
+  }
+
+  function getSectionStatus(sectionKey) {
+    switch (sectionKey) {
+      case "context": {
+        const fields = ["productCategory", "customer"];
+        if (formData.productCategory === "EBMS") fields.push("version");
+        const filled = fields.filter((f) => formData[f]?.trim?.() || formData[f]).length;
+        return { filled, total: fields.length, optional: false };
+      }
+      case "environment": {
+        const fields = ["machineType", "operatingSystem"];
+        const filled = fields.filter((f) => formData[f]).length;
+        return { filled, total: fields.length, optional: true };
+      }
+      case "reproduction": {
+        const fields = ["problemDescr", "reproducible", "observedBehavior", "expectedBehavior"];
+        const filled = fields.filter((f) => formData[f]?.trim?.() || formData[f]).length;
+        return { filled, total: fields.length, optional: false };
+      }
+      case "attachments": {
+        const fields = ["dataLink", "videoLink", "dumpFilesLink"];
+        const filled = fields.filter((f) => formData[f]?.trim()).length;
+        return { filled, total: fields.length, optional: true };
+      }
+      case "screenshots":
+        return { filled: screenshots.length, total: null, optional: true };
+      default:
+        return null;
+    }
   }
 
   function handleFileChange(event) {
@@ -364,6 +398,7 @@ export default function BugTrackFormMockup() {
           title="1. Context"
           isOpen={openSections.context}
           onToggle={toggleSection}
+          status={getSectionStatus("context")}
         >
           <label className="form-label">Product Category *</label>
           <select
@@ -411,6 +446,7 @@ export default function BugTrackFormMockup() {
           title="2. Environment"
           isOpen={openSections.environment}
           onToggle={toggleSection}
+          status={getSectionStatus("environment")}
         >
           <label className="form-label">Workstation / Server</label>
           <select
@@ -446,6 +482,7 @@ export default function BugTrackFormMockup() {
         <Section
           sectionKey="reproduction"
           title="3. Reproduction"
+          status={getSectionStatus("reproduction")}
           isOpen={openSections.reproduction}
           onToggle={toggleSection}
         >
@@ -508,6 +545,7 @@ export default function BugTrackFormMockup() {
         <Section
           sectionKey="attachments"
           title="4. Attachments / Links"
+          status={getSectionStatus("attachments")}
           isOpen={openSections.attachments}
           onToggle={toggleSection}
         >
@@ -563,6 +601,7 @@ export default function BugTrackFormMockup() {
         <Section
           sectionKey="screenshots"
           title="5. Screenshots"
+          status={getSectionStatus("screenshots")}
           isOpen={openSections.screenshots}
           onToggle={toggleSection}
         >
@@ -795,7 +834,30 @@ function PreviewBlock({ label, value }) {
   );
 }
 
-function Section({ sectionKey, title, isOpen, onToggle, children }) {
+function SectionBadge({ status }) {
+  if (!status) return null;
+
+  const { filled, total, optional } = status;
+
+  if (total === null) {
+    if (filled === 0) return null;
+    return <span className="section-badge section-badge--done">{filled} added</span>;
+  }
+
+  if (filled === 0) return null;
+
+  if (filled === total) {
+    return <span className="section-badge section-badge--done">✓ {total}/{total}</span>;
+  }
+
+  if (optional) {
+    return <span className="section-badge section-badge--optional">{filled}/{total}</span>;
+  }
+
+  return <span className="section-badge section-badge--partial">{filled}/{total}</span>;
+}
+
+function Section({ sectionKey, title, isOpen, onToggle, children, status }) {
   return (
     <div className="card">
       <button
@@ -803,7 +865,10 @@ function Section({ sectionKey, title, isOpen, onToggle, children }) {
         onClick={() => onToggle(sectionKey)}
         className="section-header"
       >
-        <span>{title}</span>
+        <span className="section-header-left">
+          <span>{title}</span>
+          <SectionBadge status={status} />
+        </span>
         <span className="chevron">{isOpen ? "▾" : "▸"}</span>
       </button>
 

@@ -89,6 +89,35 @@ a:hover {
   background: #edf3ef;
 }
 
+.section-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.02em;
+}
+
+.section-badge--done {
+  background: #d4edda;
+  color: #276a3a;
+}
+
+.section-badge--partial {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.section-badge--optional {
+  background: #e2e8f0;
+  color: #475569;
+}
+
 .chevron {
   font-size: 1.2rem;
   color: var(--text-muted);
