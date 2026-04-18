@@ -36,6 +36,7 @@ export default function BugTrackFormMockup() {
   const [formData, setFormData] = useState({
     salesforceLink: "",
     productCategory: "",
+    priority: "",
     customer: "",
     version: "",
     machineType: "",
@@ -74,7 +75,7 @@ export default function BugTrackFormMockup() {
   function getSectionStatus(sectionKey) {
     switch (sectionKey) {
       case "context": {
-        const fields = ["productCategory", "customer"];
+        const fields = ["productCategory", "priority", "customer"];
         if (formData.productCategory === "EBMS") fields.push("version");
         const filled = fields.filter((f) => formData[f]?.trim?.() || formData[f]).length;
         return { filled, total: fields.length, optional: false };
@@ -182,7 +183,9 @@ export default function BugTrackFormMockup() {
 
   function buildFizzyCardPayload() {
   const boardId = config.boardMap[formData.productCategory] || "";
-  const title = formData.problemDescr.trim();
+  const title = formData.priority
+    ? `[${formData.priority}] ${formData.problemDescr.trim()}`
+    : formData.problemDescr.trim();
 
   let description = `
     <div>
@@ -284,6 +287,7 @@ export default function BugTrackFormMockup() {
   function validate() {
     const e = {};
     if (!formData.productCategory) e.productCategory = "Product category is required.";
+    if (!formData.priority) e.priority = "Priority is required.";
     if (!formData.customer.trim()) e.customer = "Customer is required.";
     if (formData.productCategory === "EBMS" && !formData.version.trim()) e.version = "Version is required for EBMS.";
     if (!formData.problemDescr.trim()) e.problemDescr = "Description of problem is required.";
@@ -297,6 +301,7 @@ export default function BugTrackFormMockup() {
     setFormData({
       salesforceLink: "",
       productCategory: "",
+      priority: "",
       customer: "",
       version: "",
       machineType: "",
@@ -444,6 +449,20 @@ export default function BugTrackFormMockup() {
             ))}
           </select>
           {errors.productCategory && <p className="field-error">{errors.productCategory}</p>}
+
+          <label className="form-label">Priority *</label>
+          <select
+            className={`form-input${errors.priority ? " input-error" : ""}`}
+            name="priority"
+            value={formData.priority}
+            onChange={handleChange}
+          >
+            <option value="" disabled>Select priority</option>
+            <option value="High">High</option>
+            <option value="Normal">Normal</option>
+            <option value="Low">Low</option>
+          </select>
+          {errors.priority && <p className="field-error">{errors.priority}</p>}
 
           <label className="form-label">Customer *</label>
           <input
@@ -784,7 +803,9 @@ function CardPreview({ formData, screenshots }) {
   return (
     <div className="card-preview">
       <div className="card-preview-title">
-        {formData.problemDescr || <span className="preview-placeholder">No title yet</span>}
+        {formData.problemDescr
+          ? <>{formData.priority && <span className="preview-priority">[{formData.priority}]</span>} {formData.problemDescr}</>
+          : <span className="preview-placeholder">No title yet</span>}
       </div>
 
       <div className="card-preview-section">

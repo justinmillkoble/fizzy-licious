@@ -310,6 +310,11 @@ a:hover {
   word-break: break-all;
 }
 
+.preview-priority {
+  color: var(--accent-dark);
+  font-weight: 700;
+}
+
 .preview-placeholder {
   color: var(--text-muted);
   font-style: italic;
