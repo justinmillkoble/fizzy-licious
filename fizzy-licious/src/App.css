@@ -378,31 +378,11 @@ a:hover {
   margin: 4px 0 0 2px;
 }
 
-.submit-row {
-  display: flex;
-  gap: 10px;
-  margin-top: 8px;
-}
-
-.submit-row .submit-button {
-  flex: 1;
-  margin-top: 0;
-}
-
-.submit-button--secondary {
-  background: transparent;
-  color: var(--accent);
-  border: 2px solid var(--accent) !important;
-  box-shadow: none;
-}
-
-.submit-button--secondary:hover {
-  background: var(--accent);
-  color: #ffffff;
-}
-
 .submit-footer {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
   margin-top: 12px;
   font-size: 0.875rem;
 }
@@ -413,6 +393,25 @@ a:hover {
 }
 
 .submit-footer a:hover {
+  text-decoration: underline;
+}
+
+.submit-footer-divider {
+  color: var(--border);
+}
+
+.clear-form-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.clear-form-link:hover {
+  color: var(--text);
   text-decoration: underline;
 }
 
