@@ -256,6 +256,12 @@ export default function BugTrackFormMockup() {
     `;
   }
 
+  description += `
+    <div style="margin-top:24px;padding-top:12px;border-top:1px solid #e0ebe5;">
+      <p style="margin:0;color:#4a7a62;font-style:italic;font-size:0.9em;">Submitted via Koble Bug Track web form</p>
+    </div>
+  `;
+
   return {
     boardId,
     title,
