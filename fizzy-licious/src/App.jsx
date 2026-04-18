@@ -212,14 +212,6 @@ export default function BugTrackFormMockup() {
     `;
   }
 
-  if (screenshots.length > 0) {
-    description += `
-      <div style="margin-top:16px;">
-        <p><strong>Screenshots:</strong> ${screenshots.length} attached</p>
-      </div>
-    `;
-  }
-
   return {
     boardId,
     title,
@@ -227,11 +219,31 @@ export default function BugTrackFormMockup() {
   };
 }
 
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
   async function handleSubmit() {
     const payload = buildFizzyCardPayload();
 
+    if (screenshots.length > 0) {
+      payload.screenshots = await Promise.all(
+        screenshots.map(async (item) => ({
+          name: item.file.name || `screenshot-${Date.now()}.png`,
+          type: item.file.type || "image/png",
+          size: item.file.size,
+          data: await fileToBase64(item.file),
+        }))
+      );
+    }
+
     try {
-      const response = await fetch (`${import.meta.env.VITE_API_BASE_URL}/createbugtrack`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/createbugtrack`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

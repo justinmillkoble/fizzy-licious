@@ -1,4 +1,49 @@
 const { app } = require("@azure/functions");
+const { createHash } = require("crypto");
+
+async function uploadScreenshot(fizzyToken, accountSlug, screenshot) {
+  const buffer = Buffer.from(screenshot.data, "base64");
+  const checksum = createHash("md5").update(buffer).digest("base64");
+
+  const directUploadRes = await fetch(
+    `https://app.fizzy.do/${accountSlug}/rails/active_storage/direct_uploads`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${fizzyToken}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        blob: {
+          filename: screenshot.name,
+          byte_size: screenshot.size,
+          content_type: screenshot.type,
+          checksum,
+        },
+      }),
+    }
+  );
+
+  if (!directUploadRes.ok) {
+    const err = await directUploadRes.text();
+    throw new Error(`Direct upload request failed (${directUploadRes.status}): ${err}`);
+  }
+
+  const { signed_id, direct_upload } = await directUploadRes.json();
+
+  const storageRes = await fetch(direct_upload.url, {
+    method: "PUT",
+    headers: direct_upload.headers,
+    body: buffer,
+  });
+
+  if (!storageRes.ok) {
+    throw new Error(`Storage upload failed (${storageRes.status})`);
+  }
+
+  return signed_id;
+}
 
 app.http("createBugTrack", {
   methods: ["POST"],
@@ -9,15 +54,13 @@ app.http("createBugTrack", {
 
       const boardId = payload?.boardId?.trim?.() || "";
       const title = payload?.title?.trim?.() || "";
-      const body = payload?.body?.trim?.() || "";
+      let body = payload?.body?.trim?.() || "";
+      const screenshots = Array.isArray(payload?.screenshots) ? payload.screenshots : [];
 
       if (!boardId || !title || !body) {
         return {
           status: 400,
-          jsonBody: {
-            ok: false,
-            error: "boardId, title, and body are required.",
-          },
+          jsonBody: { ok: false, error: "boardId, title, and body are required." },
         };
       }
 
@@ -27,11 +70,28 @@ app.http("createBugTrack", {
       if (!fizzyToken) {
         return {
           status: 500,
-          jsonBody: {
-            ok: false,
-            error: "Missing FIZZY_API_TOKEN in local.settings.json",
-          },
+          jsonBody: { ok: false, error: "Missing FIZZY_API_TOKEN in environment." },
         };
+      }
+
+      if (screenshots.length > 0) {
+        const sgids = [];
+
+        for (const screenshot of screenshots) {
+          try {
+            const sgid = await uploadScreenshot(fizzyToken, accountSlug, screenshot);
+            sgids.push(sgid);
+          } catch (err) {
+            context.warn(`Screenshot upload failed for "${screenshot.name}":`, err.message);
+          }
+        }
+
+        if (sgids.length > 0) {
+          const attachmentTags = sgids
+            .map((sgid) => `<action-text-attachment sgid="${sgid}"></action-text-attachment>`)
+            .join("");
+          body += `<div style="margin-top:16px;"><p><strong>Screenshots:</strong></p>${attachmentTags}</div>`;
+        }
       }
 
       const fizzyUrl = `https://app.fizzy.do/${accountSlug}/boards/${boardId}/cards`;
@@ -43,17 +103,11 @@ app.http("createBugTrack", {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          card: {
-            title,
-            description: body,
-          },
-        }),
+        body: JSON.stringify({ card: { title, description: body } }),
       });
 
       const text = await fizzyResponse.text();
       let fizzyBody;
-
       try {
         fizzyBody = JSON.parse(text);
       } catch {
@@ -61,11 +115,7 @@ app.http("createBugTrack", {
       }
 
       if (!fizzyResponse.ok) {
-        context.error("Fizzy API error:", {
-          status: fizzyResponse.status,
-          body: fizzyBody,
-        });
-
+        context.error("Fizzy API error:", { status: fizzyResponse.status, body: fizzyBody });
         return {
           status: fizzyResponse.status,
           jsonBody: {
