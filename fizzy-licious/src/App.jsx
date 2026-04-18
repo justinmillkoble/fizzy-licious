@@ -760,19 +760,25 @@ export default function BugTrackFormMockup() {
           </div>
         </Section>
 
-        <button
-          type="button"
-          className="submit-button"
-          onClick={() => handleSubmit()}
-          disabled={isSubmitting || isSubmitted}
-        >
-          {isSubmitting ? "Submitting…" : isSubmitted ? "Submitted ✓" : "Submit Bug Track"}
-        </button>
-        <div className="submit-footer">
-          <button type="button" className="clear-form-link" onClick={clearForm}>
+        <div className="submit-row">
+          <button
+            type="button"
+            className="submit-button"
+            onClick={() => handleSubmit()}
+            disabled={isSubmitting || isSubmitted}
+          >
+            {isSubmitting ? "Submitting…" : isSubmitted ? "Submitted ✓" : "Submit Bug Track"}
+          </button>
+          <button
+            type="button"
+            className="submit-button submit-button--secondary"
+            onClick={clearForm}
+            disabled={isSubmitting}
+          >
             Clear Form
           </button>
-          <span className="submit-footer-divider">·</span>
+        </div>
+        <div className="submit-footer">
           <a href="https://app.fizzy.do" target="_blank" rel="noopener noreferrer">
             Open Fizzy
           </a>
