@@ -39,7 +39,8 @@ async function uploadScreenshot(fizzyToken, accountSlug, screenshot) {
   });
 
   if (!storageRes.ok) {
-    throw new Error(`Storage upload failed (${storageRes.status})`);
+    const storageErr = await storageRes.text().catch(() => "(unreadable)");
+    throw new Error(`Storage upload failed (${storageRes.status}): ${storageErr}`);
   }
 
   return signed_id;
@@ -93,7 +94,7 @@ app.http("createBugTrack", {
 
         if (signedIds.length > 0) {
           const attachmentTags = signedIds
-            .map((signedId) => `<action-text-attachment sgid="${signedId}" content-type="image/png"></action-text-attachment>`)
+            .map((signedId) => `<action-text-attachment sgid="${signedId}"></action-text-attachment>`)
             .join("");
           body += `<div style="margin-top:16px;"><p><strong>Screenshots:</strong></p>${attachmentTags}</div>`;
         }
