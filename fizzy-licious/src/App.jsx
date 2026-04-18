@@ -302,6 +302,10 @@ export default function BugTrackFormMockup() {
         alert("Bug track submitted successfully.");
       }
 
+      if (result.fizzy?.url) {
+        window.open(result.fizzy.url, "_blank", "noopener,noreferrer");
+      }
+
       if (clearAfter) clearForm();
     } catch (error) {
       console.error("Submit failed - full error:", error);
