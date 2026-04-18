@@ -514,10 +514,7 @@ export default function BugTrackFormMockup() {
           isOpen={openSections.preview}
           onToggle={toggleSection}
         >
-          <p className="preview-text">
-            Later, this is where we can show a summary before sending the card
-            to Fizzy.
-          </p>
+          <CardPreview formData={formData} screenshots={screenshots} />
         </Section>
 
         <Section
@@ -552,6 +549,128 @@ export default function BugTrackFormMockup() {
           Submit Bug Track
         </button>
       </div>
+    </div>
+  );
+}
+
+function CardPreview({ formData, screenshots }) {
+  const hasAnyData = Object.values(formData).some((v) => v.trim?.() || v);
+
+  if (!hasAnyData) {
+    return (
+      <p className="preview-empty">Fill out the form above to see a preview of your Fizzy card.</p>
+    );
+  }
+
+  const hasLinks = formData.dataLink || formData.videoLink || formData.dumpFilesLink;
+  const hasEnvironment = formData.machineType || formData.operatingSystem;
+
+  return (
+    <div className="card-preview">
+      <div className="card-preview-title">
+        {formData.problemDescr || <span className="preview-placeholder">No title yet</span>}
+      </div>
+
+      <div className="card-preview-section">
+        <PreviewRow label="Product" value={formData.productCategory} />
+        <PreviewRow label="Customer" value={formData.customer} />
+        {formData.productCategory === "EBMS" && (
+          <PreviewRow label="Version" value={formData.version} />
+        )}
+      </div>
+
+      {(formData.problemDescr || formData.reproducible) && (
+        <div className="card-preview-section">
+          <PreviewBlock label="Description of Problem" value={formData.problemDescr} />
+          <PreviewRow label="Reproducible" value={formData.reproducible} />
+        </div>
+      )}
+
+      {formData.steps && (
+        <div className="card-preview-section">
+          <PreviewBlock label="Steps to Reproduce" value={formData.steps} />
+        </div>
+      )}
+
+      {(formData.observedBehavior || formData.expectedBehavior) && (
+        <div className="card-preview-section">
+          <PreviewBlock label="Observed Behavior" value={formData.observedBehavior} />
+          <PreviewBlock label="Expected Behavior" value={formData.expectedBehavior} />
+        </div>
+      )}
+
+      {hasEnvironment && (
+        <div className="card-preview-section">
+          <PreviewRow label="Machine Type" value={formData.machineType} />
+          <PreviewRow label="Operating System" value={formData.operatingSystem} />
+        </div>
+      )}
+
+      {hasLinks && (
+        <div className="card-preview-section">
+          {formData.dataLink && (
+            <p className="preview-link-row">
+              <strong>Data:</strong>{" "}
+              <a href={formData.dataLink} target="_blank" rel="noopener noreferrer">
+                {formData.dataLink}
+              </a>
+            </p>
+          )}
+          {formData.videoLink && (
+            <p className="preview-link-row">
+              <strong>Video:</strong>{" "}
+              <a href={formData.videoLink} target="_blank" rel="noopener noreferrer">
+                {formData.videoLink}
+              </a>
+            </p>
+          )}
+          {formData.dumpFilesLink && (
+            <p className="preview-link-row">
+              <strong>Dump Files:</strong>{" "}
+              <a href={formData.dumpFilesLink} target="_blank" rel="noopener noreferrer">
+                {formData.dumpFilesLink}
+              </a>
+            </p>
+          )}
+        </div>
+      )}
+
+      {screenshots.length > 0 && (
+        <div className="card-preview-section">
+          <p className="preview-screenshots-label">
+            <strong>Screenshots:</strong> {screenshots.length} attached
+          </p>
+          <div className="preview-image-strip">
+            {screenshots.map((item, index) => (
+              <img
+                key={index}
+                src={item.previewUrl}
+                alt={`Screenshot ${index + 1}`}
+                className="preview-image-thumb"
+              />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PreviewRow({ label, value }) {
+  if (!value) return null;
+  return (
+    <p className="preview-row">
+      <strong>{label}:</strong> {value}
+    </p>
+  );
+}
+
+function PreviewBlock({ label, value }) {
+  if (!value) return null;
+  return (
+    <div className="preview-block">
+      <strong>{label}:</strong>
+      <p className="preview-block-text">{value}</p>
     </div>
   );
 }
