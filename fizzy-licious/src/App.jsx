@@ -228,7 +228,30 @@ export default function BugTrackFormMockup() {
     });
   }
 
-  async function handleSubmit() {
+  function clearForm() {
+    setFormData({
+      productCategory: "",
+      customer: "",
+      version: "",
+      machineType: "",
+      operatingSystem: "",
+      problemDescr: "",
+      reproducible: "",
+      steps: "",
+      observedBehavior: "",
+      expectedBehavior: "",
+      dataLink: "",
+      videoLink: "",
+      dumpFilesLink: "",
+    });
+    screenshots.forEach((item) => {
+      if (item?.previewUrl) URL.revokeObjectURL(item.previewUrl);
+    });
+    setScreenshots([]);
+    setOpenSections((prev) => ({ ...prev, context: true }));
+  }
+
+  async function handleSubmit(clearAfter = false) {
     const payload = buildFizzyCardPayload();
 
     if (screenshots.length > 0) {
@@ -260,7 +283,19 @@ export default function BugTrackFormMockup() {
         return;
       }
 
-      alert("Bug track payload sent successfully.");
+      const ss = result.screenshots;
+      if (ss && ss.failed > 0) {
+        const errList = ss.errors.join("\n");
+        alert(
+          `Card created, but ${ss.failed} screenshot(s) failed to upload:\n${errList}\n\nCheck the console for details.`
+        );
+      } else if (ss && ss.uploaded > 0) {
+        alert(`Bug track submitted successfully with ${ss.uploaded} screenshot(s).`);
+      } else {
+        alert("Bug track submitted successfully.");
+      }
+
+      if (clearAfter) clearForm();
     } catch (error) {
       console.error("Submit failed - full error:", error);
       console.error("Error message:", error?.message);
@@ -557,9 +592,19 @@ export default function BugTrackFormMockup() {
           </div>
         </Section>
 
-        <button type="button" className="submit-button" onClick={handleSubmit}>
-          Submit Bug Track
-        </button>
+        <div className="submit-row">
+          <button type="button" className="submit-button" onClick={handleSubmit}>
+            Submit Bug Track
+          </button>
+          <button type="button" className="submit-button submit-button--secondary" onClick={() => handleSubmit(true)}>
+            Submit &amp; Add Another
+          </button>
+        </div>
+        <div className="submit-footer">
+          <a href="https://app.fizzy.do" target="_blank" rel="noopener noreferrer">
+            Open Fizzy
+          </a>
+        </div>
       </div>
     </div>
   );

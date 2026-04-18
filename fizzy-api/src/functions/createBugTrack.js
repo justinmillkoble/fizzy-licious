@@ -74,21 +74,26 @@ app.http("createBugTrack", {
         };
       }
 
+      const screenshotResults = { uploaded: 0, failed: 0, errors: [] };
+
       if (screenshots.length > 0) {
-        const sgids = [];
+        const signedIds = [];
 
         for (const screenshot of screenshots) {
           try {
-            const sgid = await uploadScreenshot(fizzyToken, accountSlug, screenshot);
-            sgids.push(sgid);
+            const signedId = await uploadScreenshot(fizzyToken, accountSlug, screenshot);
+            signedIds.push(signedId);
+            screenshotResults.uploaded++;
           } catch (err) {
             context.warn(`Screenshot upload failed for "${screenshot.name}":`, err.message);
+            screenshotResults.failed++;
+            screenshotResults.errors.push(`${screenshot.name}: ${err.message}`);
           }
         }
 
-        if (sgids.length > 0) {
-          const attachmentTags = sgids
-            .map((sgid) => `<action-text-attachment sgid="${sgid}"></action-text-attachment>`)
+        if (signedIds.length > 0) {
+          const attachmentTags = signedIds
+            .map((signedId) => `<action-text-attachment sgid="${signedId}" content-type="image/png"></action-text-attachment>`)
             .join("");
           body += `<div style="margin-top:16px;"><p><strong>Screenshots:</strong></p>${attachmentTags}</div>`;
         }
@@ -133,6 +138,7 @@ app.http("createBugTrack", {
           ok: true,
           message: "Card created successfully in Fizzy.",
           fizzy: fizzyBody,
+          screenshots: screenshotResults,
         },
       };
     } catch (error) {

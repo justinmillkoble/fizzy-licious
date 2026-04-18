@@ -296,6 +296,44 @@ a:hover {
   background: var(--accent-dark);
 }
 
+.submit-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.submit-row .submit-button {
+  flex: 1;
+  margin-top: 0;
+}
+
+.submit-button--secondary {
+  background: transparent;
+  color: var(--accent);
+  border: 2px solid var(--accent) !important;
+  box-shadow: none;
+}
+
+.submit-button--secondary:hover {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.submit-footer {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 0.875rem;
+}
+
+.submit-footer a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.submit-footer a:hover {
+  text-decoration: underline;
+}
+
 .tip-box {
   background: var(--section-bg);
   border: 1px solid var(--border);
