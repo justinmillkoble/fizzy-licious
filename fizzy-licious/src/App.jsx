@@ -41,6 +41,9 @@ export default function BugTrackFormMockup() {
     problemDescr: "",
     reproducible: "",
     steps: "",
+    apiEndpoint: "",
+    requestPayload: "",
+    apiResponse: "",
     observedBehavior: "",
     expectedBehavior: "",
     dataLink: "",
@@ -214,6 +217,16 @@ export default function BugTrackFormMockup() {
     `;
   }
 
+  if (formData.apiEndpoint || formData.requestPayload || formData.apiResponse) {
+    description += `
+      <div style="margin-top:16px;">
+        ${formData.apiEndpoint ? `<p><strong>API Endpoint:</strong><br><code>${escapeHtml(formData.apiEndpoint)}</code></p>` : ""}
+        ${formData.requestPayload ? `<p><strong>Request Payload:</strong><br><pre style="background:#f4f7f5;padding:10px;border-radius:6px;overflow-x:auto;">${escapeHtml(formData.requestPayload)}</pre></p>` : ""}
+        ${formData.apiResponse ? `<p><strong>Response:</strong><br><pre style="background:#f4f7f5;padding:10px;border-radius:6px;overflow-x:auto;">${escapeHtml(formData.apiResponse)}</pre></p>` : ""}
+      </div>
+    `;
+  }
+
   if (formData.machineType || formData.operatingSystem) {
     description += `
       <div style="margin-top:16px;">
@@ -289,6 +302,9 @@ export default function BugTrackFormMockup() {
       problemDescr: "",
       reproducible: "",
       steps: "",
+      apiEndpoint: "",
+      requestPayload: "",
+      apiResponse: "",
       observedBehavior: "",
       expectedBehavior: "",
       dataLink: "",
@@ -512,14 +528,48 @@ export default function BugTrackFormMockup() {
           </select>
           {errors.reproducible && <p className="field-error">{errors.reproducible}</p>}
 
-          <label className="form-label">Steps to Reproduce</label>
-          <textarea
-            className="form-textarea"
-            name="steps"
-            value={formData.steps}
-            onChange={handleChange}
-            placeholder="List each step clearly. Example: 1. Open Sales Order 2. Assign customer 3. Press Ctrl+N"
-          />
+          {formData.productCategory === "APP/API" ? (
+            <>
+              <label className="form-label">API Endpoint</label>
+              <input
+                className="form-input"
+                type="text"
+                name="apiEndpoint"
+                value={formData.apiEndpoint}
+                onChange={handleChange}
+                placeholder="e.g. POST /api/v1/orders"
+              />
+
+              <label className="form-label">Request Payload</label>
+              <textarea
+                className="form-textarea form-textarea--code"
+                name="requestPayload"
+                value={formData.requestPayload}
+                onChange={handleChange}
+                placeholder='{"key": "value"}'
+              />
+
+              <label className="form-label">Response</label>
+              <textarea
+                className="form-textarea form-textarea--code"
+                name="apiResponse"
+                value={formData.apiResponse}
+                onChange={handleChange}
+                placeholder='{"error": "message"}'
+              />
+            </>
+          ) : (
+            <>
+              <label className="form-label">Steps to Reproduce</label>
+              <textarea
+                className="form-textarea"
+                name="steps"
+                value={formData.steps}
+                onChange={handleChange}
+                placeholder="List each step clearly. Example: 1. Open Sales Order 2. Assign customer 3. Press Ctrl+N"
+              />
+            </>
+          )}
 
           <label className="form-label">Observed Behavior *</label>
           <textarea
@@ -739,6 +789,14 @@ function CardPreview({ formData, screenshots }) {
         </div>
       )}
 
+      {(formData.apiEndpoint || formData.requestPayload || formData.apiResponse) && (
+        <div className="card-preview-section">
+          {formData.apiEndpoint && <PreviewBlock label="API Endpoint" value={formData.apiEndpoint} />}
+          {formData.requestPayload && <PreviewCodeBlock label="Request Payload" value={formData.requestPayload} />}
+          {formData.apiResponse && <PreviewCodeBlock label="Response" value={formData.apiResponse} />}
+        </div>
+      )}
+
       {(formData.observedBehavior || formData.expectedBehavior) && (
         <div className="card-preview-section">
           <PreviewBlock label="Observed Behavior" value={formData.observedBehavior} />
@@ -826,6 +884,16 @@ function PreviewBlock({ label, value }) {
     <div className="preview-block">
       <strong>{label}:</strong>
       <p className="preview-block-text">{value}</p>
+    </div>
+  );
+}
+
+function PreviewCodeBlock({ label, value }) {
+  if (!value) return null;
+  return (
+    <div className="preview-block">
+      <strong>{label}:</strong>
+      <pre className="preview-code">{value}</pre>
     </div>
   );
 }

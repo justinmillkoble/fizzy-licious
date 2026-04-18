@@ -160,6 +160,12 @@ a:hover {
   resize: vertical;
 }
 
+.form-textarea--code {
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 0.88rem;
+  min-height: 140px;
+}
+
 .help-text {
   color: var(--text-muted);
   font-size: 0.92rem;
@@ -282,6 +288,19 @@ a:hover {
 .preview-block-text {
   margin: 4px 0 0 0;
   white-space: pre-wrap;
+  color: var(--text);
+}
+
+.preview-code {
+  margin: 6px 0 0 0;
+  padding: 10px 12px;
+  background: var(--section-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 0.82rem;
+  white-space: pre-wrap;
+  word-break: break-all;
   color: var(--text);
 }
 
