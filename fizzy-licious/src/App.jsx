@@ -605,12 +605,8 @@ export default function BugTrackFormMockup() {
           isOpen={openSections.screenshots}
           onToggle={toggleSection}
         >
-          <div className="help-text">
-            You can paste a screenshot here with Ctrl+V or upload image files.
-          </div>
-
           <div className="paste-zone" onPaste={handlePaste} tabIndex={0}>
-            Click here, then paste a screenshot from your clipboard.
+            On desktop: click here, then press Ctrl+V to paste from clipboard.
           </div>
 
           <label className="upload-button">
