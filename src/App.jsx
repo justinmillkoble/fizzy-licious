@@ -231,7 +231,7 @@ export default function BugTrackFormMockup() {
     const payload = buildFizzyCardPayload();
 
     try {
-      const response = await fetch (`${import.meta.env.VITE_API_BASE_URL}/createBugTrack`, {
+      const response = await fetch (`${import.meta.env.VITE_API_BASE_URL}/createbugrack`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
