@@ -114,6 +114,22 @@ export default function BugTrackFormMockup() {
     setScreenshots((prev) => [...prev, ...newItems]);
   }
 
+  const [isDragOver, setIsDragOver] = useState(false);
+
+  function handleDrop(event) {
+    event.preventDefault();
+    setIsDragOver(false);
+    const files = Array.from(event.dataTransfer.files).filter((f) =>
+      f.type.startsWith("image/")
+    );
+    if (files.length === 0) return;
+    const newItems = files.map((file) => ({
+      file,
+      previewUrl: URL.createObjectURL(file),
+    }));
+    setScreenshots((prev) => [...prev, ...newItems]);
+  }
+
   function handlePaste(event) {
     const items = event.clipboardData?.items || [];
     const pastedImages = [];
@@ -683,8 +699,16 @@ export default function BugTrackFormMockup() {
           isOpen={openSections.screenshots}
           onToggle={toggleSection}
         >
-          <div className="paste-zone" onPaste={handlePaste} tabIndex={0}>
-            On desktop: click here, then press Ctrl+V to paste from clipboard.
+          <div
+            className={`paste-zone${isDragOver ? " paste-zone--drag-over" : ""}`}
+            onPaste={handlePaste}
+            onDrop={handleDrop}
+            onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
+            onDragEnter={(e) => { e.preventDefault(); setIsDragOver(true); }}
+            onDragLeave={() => setIsDragOver(false)}
+            tabIndex={0}
+          >
+            {isDragOver ? "Drop images here" : "Click here and Ctrl+V to paste, or drag and drop images."}
           </div>
 
           <label className="upload-button">

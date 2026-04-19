@@ -180,6 +180,13 @@ a:hover {
   color: var(--text-muted);
   background: var(--section-bg);
   outline: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.paste-zone--drag-over {
+  background: color-mix(in srgb, var(--accent) 12%, var(--section-bg));
+  border-color: var(--accent);
+  color: var(--text);
 }
 
 .upload-button {
