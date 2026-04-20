@@ -923,6 +923,13 @@ export default function BugTrackFormMockup() {
             Open Fizzy
           </a>
         </div>
+
+        <div className="sla-note">
+          <p className="sla-title">SLA Note</p>
+          <p>Bug submissions are reviewed within 24 business hours and prioritized based on impact (High / Normal / Low).</p>
+          <p>Some submissions may be classified as change requests, which are evaluated and scheduled alongside ongoing work and may not have a defined delivery timeline.</p>
+          <p>Urgent issues are handled as soon as an engineer is available.</p>
+        </div>
       </div>
     </div>
   );

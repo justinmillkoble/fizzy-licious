@@ -489,6 +489,34 @@ a:hover {
   margin-bottom: 6px;
 }
 
+/* SLA note */
+.sla-note {
+  margin-top: 24px;
+  padding: 16px 20px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--section-bg);
+  text-align: left;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.sla-note p {
+  margin: 0 0 8px 0;
+}
+
+.sla-note p:last-child {
+  margin-bottom: 0;
+}
+
+.sla-title {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--text);
+  margin-bottom: 10px !important;
+}
+
 /* Easter eggs */
 .confetti-container {
   position: fixed;
