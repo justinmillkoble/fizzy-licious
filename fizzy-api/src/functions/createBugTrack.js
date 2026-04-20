@@ -118,7 +118,7 @@ app.http("createBugTrack", {
 
       const isEmergency = payload?.isEmergency === true;
       const cardPayload = { card: { title, description: body } };
-      if (isEmergency) cardPayload.card.color = "yellow"; // Fizzy golden card — verify field name against Fizzy API if not working
+      if (isEmergency) cardPayload.card.golden = true;
 
       const fizzyResponse = await fetch(fizzyUrl, {
         method: "POST",
