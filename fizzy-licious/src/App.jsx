@@ -686,6 +686,9 @@ export default function BugTrackFormMockup() {
           {formData.reproducible === "Kinda" && (
             <p className="easter-nudge">😅 We've all been there.</p>
           )}
+          {formData.reproducible === "No" && (
+            <p className="easter-nudge">🙏 No worries — go ahead and submit it. Just know we have the best luck fixing bugs we can reproduce.</p>
+          )}
 
           <label className="form-label">Steps to Reproduce</label>
           <textarea
