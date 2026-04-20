@@ -35,6 +35,7 @@ export default function BugTrackFormMockup() {
 
   const [formData, setFormData] = useState({
     salesforceLink: "",
+    submittedBy: "",
     productCategory: "",
     priority: "",
     customer: "",
@@ -280,7 +281,7 @@ export default function BugTrackFormMockup() {
 
   description += `
     <div style="margin-top:24px;padding-top:12px;border-top:1px solid #e0ebe5;">
-      <p style="margin:0;color:#4a7a62;font-style:italic;font-size:0.9em;">Submitted via Koble Bug Track web form</p>
+      <p style="margin:0;color:#4a7a62;font-style:italic;font-size:0.9em;">Submitted via Koble Bug Track web form${formData.submittedBy ? ` by ${escapeHtml(formData.submittedBy)}` : ""}</p>
     </div>
   `;
 
@@ -316,6 +317,7 @@ export default function BugTrackFormMockup() {
   function clearForm() {
     setFormData({
       salesforceLink: "",
+      submittedBy: "",
       productCategory: "",
       priority: "",
       customer: "",
@@ -430,6 +432,16 @@ export default function BugTrackFormMockup() {
         </p>
 
         <div className="card sf-card">
+          <label className="form-label">Submitted By</label>
+          <input
+            className="form-input"
+            type="text"
+            name="submittedBy"
+            value={formData.submittedBy}
+            onChange={handleChange}
+            placeholder="Your name (optional)"
+          />
+
           <label className="form-label">Salesforce Ticket Link</label>
           <input
             className="form-input"
@@ -833,6 +845,7 @@ function CardPreview({ formData, screenshots }) {
       </div>
 
       <div className="card-preview-section">
+        <PreviewRow label="Submitted By" value={formData.submittedBy} />
         <PreviewRow label="Product" value={formData.productCategory} />
         <PreviewRow label="Customer" value={formData.customer} />
         {formData.productCategory === "EBMS" && (
