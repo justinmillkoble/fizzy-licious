@@ -925,8 +925,9 @@ export default function BugTrackFormMockup() {
         </div>
 
         <div className="sla-note">
-          <p className="sla-title">SLA Note</p>
+          <p className="sla-title">Service Level Agreement (SLA)</p>
           <p>Bug submissions are reviewed within 24 business hours and prioritized based on impact (High / Normal / Low).</p>
+          <p>Non-emergency bug fixes are expected to be delivered within 30 days.</p>
           <p>Some submissions may be classified as change requests, which are evaluated and scheduled alongside ongoing work and may not have a defined delivery timeline.</p>
           <p>Urgent issues are handled as soon as an engineer is available.</p>
         </div>
