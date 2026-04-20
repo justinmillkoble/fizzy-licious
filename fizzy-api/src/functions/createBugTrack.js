@@ -116,9 +116,7 @@ app.http("createBugTrack", {
 
       const fizzyUrl = `https://app.fizzy.do/${accountSlug}/boards/${boardId}/cards`;
 
-      const isEmergency = payload?.isEmergency === true;
       const cardPayload = { card: { title, description: body } };
-      if (isEmergency) cardPayload.card.golden = true;
 
       const fizzyResponse = await fetch(fizzyUrl, {
         method: "POST",
