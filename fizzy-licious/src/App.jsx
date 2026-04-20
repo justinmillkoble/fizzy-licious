@@ -350,6 +350,7 @@ export default function BugTrackFormMockup() {
     title,
     body: description.trim(),
     submitterEmail: formData.submitterEmail.trim(),
+    isEmergency: formData.priority === "Emergency",
   };
 }
 
@@ -495,8 +496,10 @@ export default function BugTrackFormMockup() {
     }
   }
 
+  const isEmergency = formData.priority === "Emergency";
+
   return (
-    <div className="page">
+    <div className={`page${isEmergency ? " page--emergency" : ""}`}>
       {konamiActive && (
         <div className="confetti-container" aria-hidden="true">
           {confettiPieces.map((p, i) => (
@@ -572,17 +575,23 @@ export default function BugTrackFormMockup() {
 
           <label className="form-label">Priority *</label>
           <select
-            className={`form-input${errors.priority ? " input-error" : ""}`}
+            className={`form-input${errors.priority ? " input-error" : ""}${formData.priority === "Emergency" ? " input-emergency" : ""}`}
             name="priority"
             value={formData.priority}
             onChange={handleChange}
           >
             <option value="" disabled>Select priority</option>
+            <option value="Emergency">🚨 Emergency (I NEED HELP NOW)</option>
             <option value="High">High</option>
             <option value="Normal">Normal</option>
             <option value="Low">Low</option>
           </select>
           {errors.priority && <p className="field-error">{errors.priority}</p>}
+          {formData.priority === "Emergency" && (
+            <div className="emergency-note">
+              <strong>⚠️ Stop — don't just submit and wait.</strong> Please reach out directly to an engineer or the product team <em>right now</em>. This form helps us track the issue, but it is not a substitute for immediate contact.
+            </div>
+          )}
 
           <label className="form-label">Customer *</label>
           <input

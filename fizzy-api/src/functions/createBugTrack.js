@@ -116,6 +116,10 @@ app.http("createBugTrack", {
 
       const fizzyUrl = `https://app.fizzy.do/${accountSlug}/boards/${boardId}/cards`;
 
+      const isEmergency = payload?.isEmergency === true;
+      const cardPayload = { card: { title, description: body } };
+      if (isEmergency) cardPayload.card.color = "yellow"; // Fizzy golden card — verify field name against Fizzy API if not working
+
       const fizzyResponse = await fetch(fizzyUrl, {
         method: "POST",
         headers: {
@@ -123,7 +127,7 @@ app.http("createBugTrack", {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ card: { title, description: body } }),
+        body: JSON.stringify(cardPayload),
       });
 
       const text = await fizzyResponse.text();
