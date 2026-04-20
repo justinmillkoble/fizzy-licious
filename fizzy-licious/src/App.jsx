@@ -6,11 +6,11 @@ const CONFETTI_COLORS = ["#94ad61","#aa3bff","#f1963a","#4a7a62","#c084fc","#f59
 
 export default function BugTrackFormMockup() {
   const config = {
-    productCategories: ["EBMS", "APP/API", "WEB"],
+    productCategories: ["EBMS", "MyEBMS API", "WEB"],
     workstationTypes: ["Workstation", "Server"],
     boardMap: {
       EBMS: "03f8h3jzo5a72vyv1nn1lqr3b",
-      "APP/API": "03f8ogxdcurv55ieu67ufw54m",
+      "MyEBMS API": "03f8ogxdcurv55ieu67ufw54m",
       WEB: "03f5ft2t7sn9h4o4a8sgibvqx",
     },
     helpLinks: {
