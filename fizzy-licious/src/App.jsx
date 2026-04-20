@@ -37,7 +37,7 @@ export default function BugTrackFormMockup() {
 
   const [formData, setFormData] = useState({
     salesforceLink: "",
-    submitterEmail: "",
+    submitterEmail: localStorage.getItem("submitterEmail") || "",
     productCategory: "",
     priority: "",
     customer: "",
@@ -60,6 +60,7 @@ export default function BugTrackFormMockup() {
   function handleChange(event) {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === "submitterEmail") localStorage.setItem("submitterEmail", value);
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
     if (isSubmitted) setIsSubmitted(false);
   }
@@ -327,7 +328,7 @@ export default function BugTrackFormMockup() {
   function clearForm() {
     setFormData({
       salesforceLink: "",
-      submitterEmail: "",
+      submitterEmail: localStorage.getItem("submitterEmail") || "",
       productCategory: "",
       priority: "",
       customer: "",
