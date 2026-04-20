@@ -10,6 +10,44 @@
   --accent-hover: #5a7430;
   --warning: #f1963a;
   --input-bg: #ffffff;
+  --remove-btn-bg: #ffffff;
+  --remove-btn-hover-bg: #f7faf8;
+  --section-header-hover-bg: #edf3ef;
+  --badge-done-bg: #d4edda;
+  --badge-done-text: #276a3a;
+  --badge-partial-bg: #fff3cd;
+  --badge-partial-text: #856404;
+  --badge-optional-bg: #e2e8f0;
+  --badge-optional-text: #475569;
+  --error: #d9534f;
+  --card-shadow: rgba(23, 51, 42, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page-bg: #141a17;
+    --card-bg: #1c2620;
+    --section-bg: #1f2b25;
+    --border: #2d4038;
+    --text: #d4e8dc;
+    --text-muted: #7aad90;
+    --accent: #a8c470;
+    --accent-dark: #8aaa4e;
+    --accent-hover: #7a9a40;
+    --warning: #f5a85a;
+    --input-bg: #1c2620;
+    --remove-btn-bg: #1f2b25;
+    --remove-btn-hover-bg: #263324;
+    --section-header-hover-bg: #243020;
+    --badge-done-bg: #1a3d27;
+    --badge-done-text: #6fcf97;
+    --badge-partial-bg: #3d2e00;
+    --badge-partial-text: #f0c040;
+    --badge-optional-bg: #1e2533;
+    --badge-optional-text: #94a3b8;
+    --error: #f87171;
+    --card-shadow: rgba(0, 0, 0, 0.35);
+  }
 }
 
 * {
@@ -59,7 +97,7 @@ a:hover {
   border-radius: 16px;
   margin-bottom: 16px;
   overflow: hidden;
-  box-shadow: 0 8px 22px rgba(23, 51, 42, 0.08);
+  box-shadow: 0 8px 22px var(--card-shadow);
 }
 
 .sf-card {
@@ -86,7 +124,7 @@ a:hover {
 }
 
 .section-header:hover {
-  background: #edf3ef;
+  background: var(--section-header-hover-bg);
 }
 
 .section-header-left {
@@ -104,18 +142,18 @@ a:hover {
 }
 
 .section-badge--done {
-  background: #d4edda;
-  color: #276a3a;
+  background: var(--badge-done-bg);
+  color: var(--badge-done-text);
 }
 
 .section-badge--partial {
-  background: #fff3cd;
-  color: #856404;
+  background: var(--badge-partial-bg);
+  color: var(--badge-partial-text);
 }
 
 .section-badge--optional {
-  background: #e2e8f0;
-  color: #475569;
+  background: var(--badge-optional-bg);
+  color: var(--badge-optional-text);
 }
 
 .chevron {
@@ -239,13 +277,13 @@ a:hover {
   padding: 8px 10px;
   border-radius: 8px;
   border: 1px solid var(--border);
-  background: #ffffff;
+  background: var(--remove-btn-bg);
   color: var(--text);
   cursor: pointer;
 }
 
 .remove-button:hover {
-  background: #f7faf8;
+  background: var(--remove-btn-hover-bg);
 }
 
 .preview-empty {
@@ -375,12 +413,12 @@ a:hover {
 }
 
 .input-error {
-  border-color: #d9534f !important;
-  outline-color: #d9534f;
+  border-color: var(--error) !important;
+  outline-color: var(--error);
 }
 
 .field-error {
-  color: #d9534f;
+  color: var(--error);
   font-size: 0.8rem;
   margin: 4px 0 0 2px;
 }
