@@ -284,7 +284,7 @@ export default function BugTrackFormMockup() {
 
   description += `
     <div style="margin-top:24px;padding-top:12px;border-top:1px solid #e0ebe5;">
-      <p style="margin:0;color:#4a7a62;font-style:italic;font-size:0.9em;">Submitted via Koble Bug Track web form${formData.submitterEmail ? ` by ${escapeHtml(formData.submitterEmail)}` : ""}</p>
+      <p style="margin:0;color:#4a7a62;font-style:italic;font-size:0.9em;">Submitted via Fizzibility${formData.submitterEmail ? ` by ${escapeHtml(formData.submitterEmail)}` : ""}</p>
     </div>
   `;
 
@@ -438,7 +438,7 @@ export default function BugTrackFormMockup() {
   return (
     <div className="page">
       <div className="container">
-        <h1 className="page-title">Koble Bug Track</h1>
+        <h1 className="page-title">Welcome to Fizzibility</h1>
         <p className="page-subtitle">
           This form is used as a template to submit bug tracks
         </p>
