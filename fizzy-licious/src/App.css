@@ -489,6 +489,57 @@ a:hover {
   margin-bottom: 6px;
 }
 
+/* Easter eggs */
+.confetti-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -12px;
+  border-radius: 2px;
+  animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+}
+
+.bubbles-container {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  pointer-events: none;
+}
+
+.bubble {
+  position: absolute;
+  bottom: 0;
+  animation: bubbleFloat 2s ease-out forwards;
+}
+
+@keyframes bubbleFloat {
+  0%   { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-100px); opacity: 0; }
+}
+
+.easter-nudge {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-style: italic;
+  margin: 6px 0 0 2px;
+}
+
 @media (max-width: 520px) {
   .page {
     padding: 16px 10px;

@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import "./App.css";
+
+const KONAMI_CODE = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"];
+const CONFETTI_COLORS = ["#94ad61","#aa3bff","#f1963a","#4a7a62","#c084fc","#f59e0b","#34d399"];
 
 export default function BugTrackFormMockup() {
   const config = {
@@ -32,6 +35,60 @@ export default function BugTrackFormMockup() {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [konamiBuffer, setKonamiBuffer] = useState([]);
+  const [konamiActive, setKonamiActive] = useState(false);
+  const [titleClicks, setTitleClicks] = useState(0);
+  const [bubblesActive, setBubblesActive] = useState(false);
+
+  const isFridayAfternoon = useMemo(() => {
+    const now = new Date();
+    return now.getDay() === 5 && now.getHours() >= 15;
+  }, []);
+
+  const confettiPieces = useMemo(() =>
+    Array.from({ length: 60 }, (_, i) => ({
+      left: `${Math.random() * 100}%`,
+      color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+      delay: `${Math.random() * 1.5}s`,
+      duration: `${2 + Math.random() * 2}s`,
+      size: `${6 + Math.random() * 8}px`,
+    })),
+  []);
+
+  const bubblePieces = useMemo(() =>
+    Array.from({ length: 8 }, (_, i) => ({
+      left: `${10 + i * 11}%`,
+      delay: `${i * 0.12}s`,
+      size: `${1.1 + (i % 3) * 0.35}rem`,
+    })),
+  []);
+
+  useEffect(() => {
+    function onKeyDown(e) {
+      setKonamiBuffer(prev => {
+        const next = [...prev, e.key].slice(-KONAMI_CODE.length);
+        if (next.join() === KONAMI_CODE.join()) {
+          setKonamiActive(true);
+          setTimeout(() => setKonamiActive(false), 4000);
+        }
+        return next;
+      });
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  function handleTitleClick() {
+    setTitleClicks(prev => {
+      const next = prev + 1;
+      if (next >= 3) {
+        setBubblesActive(true);
+        setTimeout(() => setBubblesActive(false), 3000);
+        return 0;
+      }
+      return next;
+    });
+  }
 
   const allowedDomains = ["koblesystems.com", "lumetrasolutions.ca", "ebmscanada.com"];
 
@@ -437,11 +494,30 @@ export default function BugTrackFormMockup() {
 
   return (
     <div className="page">
+      {konamiActive && (
+        <div className="confetti-container" aria-hidden="true">
+          {confettiPieces.map((p, i) => (
+            <div key={i} className="confetti-piece" style={{ left: p.left, background: p.color, animationDelay: p.delay, animationDuration: p.duration, width: p.size, height: p.size }} />
+          ))}
+        </div>
+      )}
       <div className="container">
-        <h1 className="page-title">Welcome to Fizzibility</h1>
+        <div style={{ position: "relative" }}>
+          <h1 className="page-title" onClick={handleTitleClick}>Welcome to Fizzibility</h1>
+          {bubblesActive && (
+            <div className="bubbles-container" aria-hidden="true">
+              {bubblePieces.map((b, i) => (
+                <span key={i} className="bubble" style={{ left: b.left, animationDelay: b.delay, fontSize: b.size }}>🫧</span>
+              ))}
+            </div>
+          )}
+        </div>
         <p className="page-subtitle">
           This form is used as a template to submit bug tracks
         </p>
+        {isFridayAfternoon && (
+          <p className="easter-nudge">☕ Submitting bugs on a Friday? Bold move.</p>
+        )}
 
         <div className="card sf-card">
           <label className="form-label">Your Email *</label>
@@ -515,6 +591,9 @@ export default function BugTrackFormMockup() {
             placeholder="Customer name or account"
           />
           {errors.customer && <p className="field-error">{errors.customer}</p>}
+          {formData.customer.trim().toLowerCase() === "test" && (
+            <p className="easter-nudge">👀 Is this a real bug or just testing?</p>
+          )}
 
           <label className="form-label">Version *</label>
           <input
@@ -582,6 +661,9 @@ export default function BugTrackFormMockup() {
             placeholder="EBMS won't open"
           />
           {errors.problemDescr && <p className="field-error">{errors.problemDescr}</p>}
+          {formData.problemDescr.length >= 500 && (
+            <p className="easter-nudge">📝 Wow, that's a lot of bug.</p>
+          )}
 
           <label className="form-label">Reproducible *</label>
           <select
@@ -598,6 +680,9 @@ export default function BugTrackFormMockup() {
             <option value="Kinda">Kinda</option>
           </select>
           {errors.reproducible && <p className="field-error">{errors.reproducible}</p>}
+          {formData.reproducible === "Kinda" && (
+            <p className="easter-nudge">😅 We've all been there.</p>
+          )}
 
           <label className="form-label">Steps to Reproduce</label>
           <textarea
