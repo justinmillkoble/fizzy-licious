@@ -33,9 +33,11 @@ export default function BugTrackFormMockup() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  const allowedDomains = ["koblesystems.com", "lumetrasolutions.ca", "ebmscanada.com"];
+
   const [formData, setFormData] = useState({
     salesforceLink: "",
-    submittedBy: "",
+    submitterEmail: "",
     productCategory: "",
     priority: "",
     customer: "",
@@ -281,7 +283,7 @@ export default function BugTrackFormMockup() {
 
   description += `
     <div style="margin-top:24px;padding-top:12px;border-top:1px solid #e0ebe5;">
-      <p style="margin:0;color:#4a7a62;font-style:italic;font-size:0.9em;">Submitted via Koble Bug Track web form${formData.submittedBy ? ` by ${escapeHtml(formData.submittedBy)}` : ""}</p>
+      <p style="margin:0;color:#4a7a62;font-style:italic;font-size:0.9em;">Submitted via Koble Bug Track web form${formData.submitterEmail ? ` by ${escapeHtml(formData.submitterEmail)}` : ""}</p>
     </div>
   `;
 
@@ -303,6 +305,14 @@ export default function BugTrackFormMockup() {
 
   function validate() {
     const e = {};
+    if (!formData.submitterEmail.trim()) {
+      e.submitterEmail = "Email is required.";
+    } else {
+      const domain = formData.submitterEmail.trim().split("@")[1]?.toLowerCase();
+      if (!allowedDomains.includes(domain)) {
+        e.submitterEmail = `Email must be from: ${allowedDomains.join(", ")}`;
+      }
+    }
     if (!formData.productCategory) e.productCategory = "Product category is required.";
     if (!formData.priority) e.priority = "Priority is required.";
     if (!formData.customer.trim()) e.customer = "Customer is required.";
@@ -317,7 +327,7 @@ export default function BugTrackFormMockup() {
   function clearForm() {
     setFormData({
       salesforceLink: "",
-      submittedBy: "",
+      submitterEmail: "",
       productCategory: "",
       priority: "",
       customer: "",
@@ -432,15 +442,16 @@ export default function BugTrackFormMockup() {
         </p>
 
         <div className="card sf-card">
-          <label className="form-label">Submitted By</label>
+          <label className="form-label">Your Email *</label>
           <input
-            className="form-input"
-            type="text"
-            name="submittedBy"
-            value={formData.submittedBy}
+            className={`form-input${errors.submitterEmail ? " input-error" : ""}`}
+            type="email"
+            name="submitterEmail"
+            value={formData.submitterEmail}
             onChange={handleChange}
-            placeholder="Your name (optional)"
+            placeholder="you@koblesystems.com"
           />
+          {errors.submitterEmail && <p className="field-error">{errors.submitterEmail}</p>}
 
           <label className="form-label">Salesforce Ticket Link</label>
           <input
@@ -845,7 +856,7 @@ function CardPreview({ formData, screenshots }) {
       </div>
 
       <div className="card-preview-section">
-        <PreviewRow label="Submitted By" value={formData.submittedBy} />
+        <PreviewRow label="Submitted By" value={formData.submitterEmail} />
         <PreviewRow label="Product" value={formData.productCategory} />
         <PreviewRow label="Customer" value={formData.customer} />
         {formData.productCategory === "EBMS" && (

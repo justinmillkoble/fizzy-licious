@@ -1,6 +1,8 @@
 const { app } = require("@azure/functions");
 const { createHash } = require("crypto");
 
+const ALLOWED_DOMAINS = ["koblesystems.com", "lumetrasolutions.ca", "ebmscanada.com"];
+
 async function uploadScreenshot(fizzyToken, accountSlug, screenshot) {
   const buffer = Buffer.from(screenshot.data, "base64");
   const checksum = createHash("md5").update(buffer).digest("base64");
@@ -57,11 +59,20 @@ app.http("createBugTrack", {
       const title = payload?.title?.trim?.() || "";
       let body = payload?.body?.trim?.() || "";
       const screenshots = Array.isArray(payload?.screenshots) ? payload.screenshots : [];
+      const submitterEmail = payload?.submitterEmail?.trim?.() || "";
 
       if (!boardId || !title || !body) {
         return {
           status: 400,
           jsonBody: { ok: false, error: "boardId, title, and body are required." },
+        };
+      }
+
+      const emailDomain = submitterEmail.split("@")[1]?.toLowerCase();
+      if (!submitterEmail || !ALLOWED_DOMAINS.includes(emailDomain)) {
+        return {
+          status: 403,
+          jsonBody: { ok: false, error: "Submitter email must be from an authorized domain." },
         };
       }
 
