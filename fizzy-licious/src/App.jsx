@@ -521,6 +521,9 @@ export default function BugTrackFormMockup() {
         <p className="page-subtitle">
           This form is used as a template to submit bug tracks
         </p>
+        <p className="duplicate-check">
+          Before submitting, <a href="https://app.powerbi.com/groups/cda17dd6-822b-496b-a377-83d5508914cb/reports/58bc92bd-2887-41d5-9a55-4161dc60d554/63e389163776d221ca30?language=en-US&disableBranding=1&experience=power-bi" target="_blank" rel="noopener noreferrer">search existing bug tracks</a> to avoid duplicates.
+        </p>
         {isFridayAfternoon && (
           <p className="easter-nudge">☕ Submitting bugs on a Friday? Bold move.</p>
         )}

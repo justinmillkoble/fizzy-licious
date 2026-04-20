@@ -465,6 +465,12 @@ a:hover {
 }
 
 
+.duplicate-check {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
 .tip-box {
   background: var(--section-bg);
   border: 1px solid var(--border);
