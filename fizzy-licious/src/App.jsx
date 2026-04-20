@@ -478,6 +478,9 @@ export default function BugTrackFormMockup() {
         window.open(result.fizzy.url, "_blank", "noopener,noreferrer");
       }
 
+      setKonamiActive(true);
+      setTimeout(() => setKonamiActive(false), 4000);
+
       if (clearAfter) {
         clearForm();
       } else {
