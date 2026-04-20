@@ -292,6 +292,7 @@ export default function BugTrackFormMockup() {
     boardId,
     title,
     body: description.trim(),
+    submitterEmail: formData.submitterEmail.trim(),
   };
 }
 
