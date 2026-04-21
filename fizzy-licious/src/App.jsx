@@ -110,13 +110,14 @@ export default function BugTrackFormMockup() {
     observedBehavior: "",
     expectedBehavior: "",
     dataLink: "",
+    anyData: false,
     videoLink: "",
     dumpFilesLink: "",
   });
 
   function handleChange(event) {
-    const { name, value } = event.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
     if (name === "submitterEmail") localStorage.setItem("submitterEmail", value);
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
     if (isSubmitted) setIsSubmitted(false);
@@ -153,8 +154,8 @@ export default function BugTrackFormMockup() {
       }
       case "attachments": {
         const fields = ["dataLink", "videoLink", "dumpFilesLink"];
-        const filled = fields.filter((f) => formData[f]?.trim()).length;
-        return { filled, total: fields.length, optional: true };
+        const filled = fields.filter((f) => formData[f]?.trim()).length + (formData.anyData ? 1 : 0);
+        return { filled, total: fields.length + 1, optional: true };
       }
       case "screenshots":
         return { filled: screenshots.length, total: null, optional: true };
@@ -312,7 +313,7 @@ export default function BugTrackFormMockup() {
     `;
   }
 
-  if (formData.salesforceLink || formData.dataLink || formData.videoLink || formData.dumpFilesLink) {
+  if (formData.salesforceLink || formData.dataLink || formData.anyData || formData.videoLink || formData.dumpFilesLink) {
     description += `
       <div style="margin-top:16px;">
         ${
@@ -325,6 +326,7 @@ export default function BugTrackFormMockup() {
             ? `<p><a href="${escapeHtml(formData.dataLink)}">Data Link</a></p>`
             : ""
         }
+        ${formData.anyData ? `<p><strong>Any Data:</strong> Reproducible on any dataset</p>` : ""}
         ${
           formData.videoLink
             ? `<p><a href="${escapeHtml(formData.videoLink)}">Video Link</a></p>`
@@ -403,6 +405,7 @@ export default function BugTrackFormMockup() {
       observedBehavior: "",
       expectedBehavior: "",
       dataLink: "",
+      anyData: false,
       videoLink: "",
       dumpFilesLink: "",
     });
@@ -790,6 +793,16 @@ export default function BugTrackFormMockup() {
             </a>
           </div>
 
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              name="anyData"
+              checked={formData.anyData}
+              onChange={handleChange}
+            />
+            Any Data — reproducible on any dataset
+          </label>
+
           <label className="form-label">Video Link</label>
           <input
             className="form-input"
@@ -957,7 +970,7 @@ function CardPreview({ formData, screenshots }) {
     );
   }
 
-  const hasLinks = formData.salesforceLink || formData.dataLink || formData.videoLink || formData.dumpFilesLink;
+  const hasLinks = formData.salesforceLink || formData.dataLink || formData.anyData || formData.videoLink || formData.dumpFilesLink;
   const hasEnvironment = formData.machineType || formData.operatingSystem;
 
   return (
@@ -1028,6 +1041,11 @@ function CardPreview({ formData, screenshots }) {
               <a href={formData.dataLink} target="_blank" rel="noopener noreferrer">
                 {formData.dataLink}
               </a>
+            </p>
+          )}
+          {formData.anyData && (
+            <p className="preview-link-row">
+              <strong>Any Data:</strong> Reproducible on any dataset
             </p>
           )}
           {formData.videoLink && (
