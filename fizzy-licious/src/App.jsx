@@ -902,8 +902,8 @@ export default function BugTrackFormMockup() {
                 </select>
                 {errors.apiAction && <p className="field-error">{errors.apiAction}</p>}
 
-                <label className="form-label">URL *</label>
-                <input className={`form-input${errors.apiUrl ? " input-error" : ""}`} type="text" name="apiUrl" value={formData.apiUrl} onChange={handleChange} placeholder="e.g. /api/v1/orders" />
+                <label className="form-label">Full URL *</label>
+                <input className={`form-input${errors.apiUrl ? " input-error" : ""}`} type="text" name="apiUrl" value={formData.apiUrl} onChange={handleChange} placeholder="e.g. https://1234567890123.koblesystems.dev/MyEBMS/ABC/OData/ARINV?select=..." />
                 {errors.apiUrl && <p className="field-error">{errors.apiUrl}</p>}
 
                 <label className="form-label">Request Body *</label>
